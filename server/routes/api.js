@@ -183,6 +183,20 @@ function newApplication(req, res) {
   var app = new Application();
   app.token = mongoose.Types.ObjectId();
 
+  var samlId = req.body.samlId;
+  var postUrl = req.body.postUrl;
+
+  if (samlId == null) {
+    samlId = "";
+  }
+
+  if (postUrl == null) {
+    postUrl = "";
+  }
+
+  app.samlId = samlId;
+  app.postUrl = postUrl;
+
   app.save(function (err, application) {
     if (err) {
       return res.end(JSON.stringify({
@@ -198,12 +212,22 @@ function newApplication(req, res) {
   });
 }
 
+function listApps(req, res) {
+  Application.find({}, function(err, apps){
+    if (err || apps == null || apps.length == 0) {
+      return res.end("No application");
+    }
+
+    return res.render("apps", {apps:apps});
+  });
+}
+
 function login(req, res) {
   var email = req.body.email;
   var password = req.body.password;
 
   User.find({email: email}, function (err, user) {
-    if (err) {
+    if (err || user == null || user.length == 0) {
       return res.end(JSON.stringify({
         code: UNAUTHORIZED_USER,
         message: 'unauthorized user: ' + email
@@ -276,5 +300,6 @@ module.exports = {
   setUserAttr: setUserAttr,
   createUser: createUser,
   newApplication: newApplication,
+  listApps: listApps,
   login: login
 }

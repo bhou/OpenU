@@ -10,7 +10,9 @@ var passport = require('passport');
 var bcrypt = require('bcrypt');
 
 var Application = new Schema({
-  token: {type: ObjectId, required: true}
+  token: {type: ObjectId, required: true},
+  samlId: {type: String, index: true, required: true, unique: true},
+  postUrl: {type: String, required: false}
 }, {collection: 'application'});
 
 var Attribute = new Schema({

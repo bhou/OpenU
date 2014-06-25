@@ -1,4 +1,3 @@
-
 /**
  * Module dependencies.
  */
@@ -16,12 +15,43 @@ var config = require('./config');
 var db = require('./lib/db');
 var User = require('./lib/dao').User;
 
+//=============== BEGIN OF BLUEMIX ENV
+
+// There are many useful environment variables available in process.env,
+// please refer to the following document for detailed description:
+// http://ng.w3.bluemix.net/docs/FAQ.jsp#env_var
+
+// VCAP_APPLICATION contains useful information about a deployed application.
+var appInfo = JSON.parse(process.env.VCAP_APPLICATION || "{}");
+// TODO: Get application information and use it in your app.
+
+// VCAP_SERVICES contains all the credentials of services bound to
+// this application. For details of its content, please refer to
+// the document or sample of each service.
+var services = JSON.parse(process.env.VCAP_SERVICES || "{}");
+// TODO: Get service credentials and communicate with bluemix services.
+if (services["mongodb-2.2"]) {
+  config.mongostore.db = services["mongodb-2.2"].credentials.db;
+  config.mongostore.host = services["mongodb-2.2"].credentials.host;
+  config.mongostore.username = services["mongodb-2.2"].credentials.username;
+  config.mongostore.password = services["mongodb-2.2"].credentials.password;
+  config.mongostore.port = services["mongodb-2.2"].credentials.port;
+}
+
+// The IP address of the Cloud Foundry DEA (Droplet Execution Agent) that hosts this application:
+var host = (process.env.VCAP_APP_HOST || 'localhost');
+// The port on the DEA for communication with the application:
+var port = (process.env.VCAP_APP_PORT || 3001);
+
+//============== END OF BLUEMIX ENV
+
 
 var app = express();
 
 // connect the database
 var conn = "mongodb://" + config.mongostore.username + ":" + config.mongostore.password + "@"
   + config.mongostore.host + ":" + config.mongostore.port + "/" + config.mongostore.db;
+console.log('db connection:' + conn);
 db.startup(conn);
 
 
@@ -63,6 +93,7 @@ app.post('/doLogin', idp.doLogin);
  * this is used by the application / client
  */
 // api for admin
+app.get('/api/apps', api.listApps);
 app.post('/api/app', api.newApplication); // create a new application
 
 // api for application
@@ -80,6 +111,8 @@ app.get('/samlp', idp.redirectEndPoint);
 app.post('/samlp', idp.postEndpoint);
 app.get('/samlp/metadata.xml', idp.idpMetadata);
 
-http.createServer(app).listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
+
+// start server
+http.createServer(app).listen(port, function () {
+  console.log('Express server listening on port ' + port);// + app.get('port'));
 });

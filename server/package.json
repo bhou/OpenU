@@ -8,12 +8,17 @@
   "dependencies": {
     "express": "3.8.0",
     "jade": "*",
-    "samlp": "*",
     "xtend": "*",
     "connect-mongo": "*",
     "passport": "*",
     "mongoose": "*",
     "bcrypt": "*",
-    "passport-local": "*"
+    "passport-local": "*",
+    "saml": "~0.6.1",
+    "ejs": "~0.8.3",
+    "thumbprint": "0.0.1",
+    "xmldom": "~0.1.15",
+    "xpath": "0.0.5",
+    "xml-crypto": "0.0.13"
   }
 }

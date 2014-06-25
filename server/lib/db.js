@@ -12,6 +12,7 @@ var LocalStrategy = require('passport-local').Strategy;
 var dao = require('./dao');
 var User = dao.User;
 var Attribute = dao.Attribute;
+var Application = dao.Application;
 
 // Define local strategy for Passport
 passport.use(new LocalStrategy({
@@ -99,9 +100,20 @@ function updateUserAttr(uid, name, value, callback) {
   });
 }
 
+function findApplicationBySamlId(samlId, callback) {
+  Application.find({samlId: samlId}, function(err, app){
+    if (err) {
+      return callback(err, null);
+    }
+
+    return callback(err, app);
+  });
+}
+
 module.exports = {
   startup: startup,
   saveUser: saveUser,
   getUserAttr: getUserAttr,
-  updateUserAttr: updateUserAttr
+  updateUserAttr: updateUserAttr,
+  findAppBySamlId: findApplicationBySamlId
 }

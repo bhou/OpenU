@@ -1,7 +1,7 @@
 /**
  * Created by BHOU on 6/20/14.
  */
-var samlp = require('samlp');
+var samlp = require('../lib/samlp');
 var xtend = require('xtend');
 var fs = require('fs');
 var passport = require('passport');
@@ -69,10 +69,22 @@ function idpMetadata(req, res) {
  * retrieve the POST URL
  */
 var postURLs = {  /*issuer: url pair*/
-  'https://auth0-dev-ed.my.salesforce.com' : 'http://office.google.com'
+  'https://auth0-dev-ed.my.salesforce.com' : 'http://office.google.com',
+  'passport-saml': 'http://localhost:3000/login/callback',
+  'OaaS': 'http://localhost:9080/OaaS/consume.jsp'
 }
 function getPostURL(wtrealm, wreply, req, callback) {
-  callback(null, 'http://office.google.com');
+  db.findAppBySamlId(wtrealm, function(err, apps){
+    if (err) {
+      return callback(err, null);
+    }
+
+    if (apps == null || apps.length == 0){
+      return callback(null, 'http://ibm.com');
+    }
+
+    return callback(null, apps[0].postUrl);
+  })
 }
 
 /**

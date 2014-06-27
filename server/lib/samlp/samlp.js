@@ -149,8 +149,10 @@ module.exports.auth = function(options) {
     // if(!user) return res.send(401);
     if (!user) {
       // get the query string
-      if (req.query != null) {
+      if (req.method.toLowerCase() == 'get' && req.query != null) {
         req.session.samlquery = querystring.stringify(req.query);
+      } else if (req.method.toLowerCase() == 'post' && req.body != null) {
+        req.session.samlquery = querystring.stringify(req.body);
       }
       return res.render('login');
     } else {

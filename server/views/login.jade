@@ -95,7 +95,7 @@ html(lang="en")
             i.m-icon-swapright.m-icon-white
       // END FORGOT PASSWORD FORM
       // BEGIN REGISTRATION FORM
-      form.form-vertical.register-form(action="index.html", method="post")
+      form.form-vertical.register-form(action="/doRegister", method="post")
         h3 Sign Up
         p Enter your personal details below:
         .control-group
@@ -109,7 +109,7 @@ html(lang="en")
           .controls
             .input-icon.left
               i.icon-user
-              input.m-wrap.placeholder-no-fix(type="text", autocomplete="off", placeholder="Username", name="username")
+              input.m-wrap.placeholder-no-fix(type="text", autocomplete="off", placeholder="Username", name="name")
         p Enter your account details below:
         .control-group
           // ie8, ie9 does not support html5 placeholder, so we just show field title for that

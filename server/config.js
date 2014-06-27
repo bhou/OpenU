@@ -11,4 +11,14 @@ module.exports = {
     password: 'test'
   }
 
+  /*
+  mongostore: {
+    db: 'openu',
+    host: 'localhost',
+    port: '27017',
+    username: '',
+    password: ''
+  }
+  */
+
 }

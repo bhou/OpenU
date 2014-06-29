@@ -8,6 +8,11 @@ var passport = require('passport');
 var db = require('../lib/db');
 var querystring = require('querystring');
 
+var mongoose = require('mongoose');
+var dao = require('../lib/dao');
+var User = dao.User;
+var Attribute = dao.Attribute;
+
 // credential used for saml provider
 var credential = {
   cert: fs.readFileSync('./resources/cert.pem'),
@@ -109,14 +114,41 @@ function doLogin(req, res, next) {
       }
       return res.redirect('/login?error='+errCode);
     }
-    req.logIn(user, function(err) {
-      if (err) { return next(err); }
-        if (req.session.samlquery!=null){
-          return res.redirect('/samlp?' + req.session.samlquery);
-        }else {
-          return res.end('login!');
-        }
-    });
+
+    // create token
+    var attr = null;
+    var attrs = user.attributes;
+    var len = attrs.length;
+    for (var i = 0; i < len; i++) {
+      if (attrs[i].name == 'token') {
+        attr = attrs[i];
+        break;
+      }
+    }
+
+    if (attr == null) {
+      user.attributes.push(new Attribute({name: 'token', value: mongoose.Types.ObjectId()}));
+      user.save(function(err, userObj) {
+        req.logIn(userObj, function(err) {
+          if (err) { return next(err); }
+          if (req.session.samlquery!=null){
+            return res.redirect('/samlp?' + req.session.samlquery);
+          }else {
+            return res.end('login!');
+          }
+        });
+      });
+    } else {
+      req.logIn(user, function(err) {
+        if (err) { return next(err); }
+          if (req.session.samlquery!=null){
+            return res.redirect('/samlp?' + req.session.samlquery);
+          }else {
+            return res.end('login!');
+          }
+      });
+    }
+
   })(req, res, next);
 }
 

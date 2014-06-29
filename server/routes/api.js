@@ -226,6 +226,8 @@ function login(req, res) {
   var email = req.body.email;
   var password = req.body.password;
 
+  res.setHeader("Content-Type", "application/json");
+
   User.find({email: email}, function (err, user) {
     if (err || user == null || user.length == 0) {
       return res.end(JSON.stringify({

@@ -6,7 +6,8 @@ var fm = {
   'givenname': 'givenName',
   'surname': 'surName',
   'upn': 'upn',
-  'groups': 'gourps'
+  'groups': 'gourps',
+  'token': 'token'
 };
 
 /**
@@ -43,6 +44,18 @@ PassportProfileMapper.prototype.getClaims = function () {
   claims[fm.name] = this._pu.name;
   claims[fm.givenname] = this._pu.name;
   claims[fm.surname] = this._pu.name;
+
+  var attrs = this._pu.attributes;
+  if (attrs != null && attrs.length != 0) {
+    var len = attrs.length;
+    for (var i = 0; i < len; i++) {
+      if (attrs[i].name == 'token') {
+        claims[fm.token] = attrs[i].value;
+        break;
+      }
+    }
+  }
+
 
   // var dontRemapAttributes = ['emails', 'displayName', 'name', 'id', '_json'];
 
@@ -107,6 +120,12 @@ PassportProfileMapper.prototype.metadata = [
     optional: true,
     displayName: 'Name ID',
     description: 'The SAML name identifier of the user'
+  },
+  {
+    id: "http://certifoto.com/identity/claims/token",
+    optional: true,
+    displayName: 'token',
+    description: 'The login token of the user'
   }
 ];
 

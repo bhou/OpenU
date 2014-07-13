@@ -198,7 +198,7 @@ function doRegister(req, res, next) {
         req.session.name = name;
 
 
-        res.redirect('/register');
+        res.redirect('/login');
         return;
       }
 

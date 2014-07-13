@@ -280,6 +280,60 @@ function login(req, res) {
   })
 }
 
+function verifyToken(req, res) {
+  var email = req.body.email;
+  var token = req.body.token;
+
+  if(email == null || token == null) {
+    res.status(400).send('Bad Request');
+  }
+
+  User.find({email: email}, function (err, user) {
+    if (err || user == null || user.length == 0) {
+      return res.status(404).end(JSON.stringify({
+        code: UNAUTHORIZED_USER,
+        message: 'could not find user: ' + email
+      }));
+    }
+
+    db.getUserAttr(user[0]._id, 'token', function(err, user, attr){
+      if (err) {
+        return res.status(500).end(JSON.stringify({
+          code: UNAUTHORIZED_USER,
+          message: 'Error when finding token of the user: ' + email
+        }));
+      }
+
+      var attribute = attr;
+      if (attr == null) {
+        attribute = new Attribute({name:'token', value:mongoose.Types.ObjectId()});
+        user.attributes.push(attribute);
+      } else {
+        if (attribute.value == null) {
+          attribute.value = mongoose.Types.ObjectId();
+        }
+      }
+      user.save();
+
+      if (attribute.value != token) {
+        return res.status(409).end(JSON.stringify({
+          code: 200,
+          message: {
+            email: email,
+            token: attribute.value}
+        }));
+      }
+
+      return res.end(JSON.stringify({
+        code: 200,
+        message: {
+          email: email,
+          token: attribute.value}
+      }));
+    });
+  })
+}
+
 /**
  * return
  * @param user
@@ -303,5 +357,6 @@ module.exports = {
   createUser: createUser,
   newApplication: newApplication,
   listApps: listApps,
-  login: login
+  login: login,
+  verifyToken: verifyToken
 }

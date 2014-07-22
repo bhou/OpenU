@@ -102,6 +102,15 @@ function login(req, res) {
 }
 
 function doLogin(req, res, next) {
+  var relayState = req.param('RelayState');
+
+  var port = req.app.settings.port || cfg.port;
+  var currentUrl = req.protocol + '://' + req.host  + ( port == 80 || port == 443 ? '' : ':'+port);
+
+  if (relayState == null) {
+    relayState = currentUrl;
+  }
+
   passport.authenticate('local', function(err, user, info) {
     if (err) { return next(err) }
 
@@ -112,7 +121,7 @@ function doLogin(req, res, next) {
       }else{
         req.session.messages = "Incorrect user name / password"
       }
-      return res.redirect('/login?error='+errCode);
+      return res.redirect(currentUrl + '?error='+errCode);
     }
 
     // create token
@@ -134,7 +143,7 @@ function doLogin(req, res, next) {
           if (req.session.samlquery!=null){
             return res.redirect('/samlp?' + req.session.samlquery);
           }else {
-            return res.end('login!');
+            return res.redirect(relayState);
           }
         });
       });
@@ -144,7 +153,7 @@ function doLogin(req, res, next) {
           if (req.session.samlquery!=null){
             return res.redirect('/samlp?' + req.session.samlquery);
           }else {
-            return res.end('login!');
+            return res.redirect(relayState);
           }
       });
     }
@@ -157,6 +166,15 @@ function register(req, res) {
 }
 
 function doRegister(req, res, next) {
+  var relayState = req.param('RelayState');
+
+  var port = req.app.settings.port || cfg.port;
+  var currentUrl = req.protocol + '://' + req.host  + ( port == 80 || port == 443 ? '' : ':'+port);
+
+  if (relayState == null) {
+    relayState = currentUrl;
+  }
+
   var name = req.param('name');
   var email = req.param('email');
   var password = req.param('password');

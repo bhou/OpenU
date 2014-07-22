@@ -19,6 +19,7 @@
     "thumbprint": "0.0.1",
     "xmldom": "~0.1.15",
     "xpath": "0.0.5",
-    "xml-crypto": "0.0.13"
+    "xml-crypto": "0.0.13",
+    "jwt-simple": "*"
   }
 }

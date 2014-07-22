@@ -71,11 +71,39 @@ function ensureAppAuthenticated(req, res, next) {
 function getUserInfo(req, res) {
   var id = req.params.id;
 
-  if (id == null) {
-    return res.end(JSON.stringify({
-      code: INVALID_USER_ID,
-      message: 'Invalid user id'
-    }));
+  if (id == null || "null" == id) {
+    var email = req.body.email;
+    if (email == null) {
+      return res.end(JSON.stringify({
+        code: INVALID_USER_ID,
+        message: 'Invalid user id'
+      }));
+    }
+
+    return User.find({"email": email}, function (err, users) {
+      if (err) {
+        return res.end(JSON.stringify({
+          code: ERROR_WHEN_FIND,
+          message: err.message
+        }));
+      }
+
+      if (users == null || users.length == 0){
+        return res.end(JSON.stringify({
+          code: ERROR_WHEN_FIND,
+          message: 'No such user!'
+        }));
+      }
+
+      var ret = {
+        code: 200,
+        message: {}
+      };
+
+      ret.message = prepareUserInfo(users[0]);
+
+      return res.end(JSON.stringify(ret));
+    });
   }
 
   User.findById(id, function (err, user) {
@@ -96,25 +124,7 @@ function getUserInfo(req, res) {
   });
 }
 
-function setUserAttr(req, res) {
-  var id = req.params.id;
-  if (id == null) {
-    return res.end(JSON.stringify({
-      code: INVALID_USER_ID,
-      message: 'Invalid user id'
-    }));
-  }
-
-  var name = req.body.name;
-  if (name == null) {
-    return res.end(JSON.stringify({
-      code: INVALID_ATTR_NAME,
-      message: 'Invalid attribute name'
-    }));
-  }
-
-  var value = req.body.value;
-
+function doUpdateUserAttr(req, res, id, name, value) {
   db.updateUserAttr(id, name, value, function (err, user, attr) {
     if (err) {
       return res.end(JSON.stringify({
@@ -130,6 +140,49 @@ function setUserAttr(req, res) {
     ret.message = prepareUserInfo(user);
     return res.end(JSON.stringify(ret));
   });
+}
+function setUserAttr(req, res) {
+  var name = req.body.name;
+  if (name == null) {
+    return res.end(JSON.stringify({
+      code: INVALID_ATTR_NAME,
+      message: 'Invalid attribute name'
+    }));
+  }
+
+  var value = req.body.value;
+
+  var id = req.params.id;
+  if (id == null) {
+    var email = req.body.email;
+    if (email == null) {
+      return res.end(JSON.stringify({
+        code: INVALID_USER_ID,
+        message: 'Invalid user id'
+      }));
+    }
+
+    User.find({"email": email}, function(err, users){
+      if (err) {
+        return res.end(JSON.stringify({
+          code: INVALID_USER_ID,
+          message: 'Invalid user id'
+        }));
+      }
+
+      if (users == null || users.length == 0){
+        return res.end(JSON.stringify({
+          code: INVALID_USER_ID,
+          message: 'Invalid user id'
+        }));
+      }
+
+      id = users[0].id;
+      return doUpdateUserAttr(req, res, id, name, value);
+    });
+  } else {
+    return doUpdateUserAttr(req, res, id, name, value);
+  }
 }
 
 function createUser(req, res) {

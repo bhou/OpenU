@@ -71,6 +71,8 @@ app.use(passport.session());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.set('jwtTokenSecret', 'OPEN-U TOKEN SECRET');
+
 // development only
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
@@ -102,6 +104,7 @@ app.post('/api/verify', api.ensureAppAuthenticated, api.verifyToken);  // verify
 app.get('/api/user/:id', api.ensureAppAuthenticated, api.getUserInfo);    // get user information
 app.post('/api/user', api.ensureAppAuthenticated, api.createUser);    // create user information
 app.put('/api/user/:id', api.ensureAppAuthenticated, api.setUserAttr);   // update user information
+app.put('/api/user', api.ensureAppAuthenticated, api.setUserAttr);   // update user information
 
 
 /**

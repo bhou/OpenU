@@ -106,7 +106,7 @@ function internalRegister(res, appId, token, email, name, password, callback) {
 function doRegister(req, res) {
   var email = req.param('email');
   var name = req.param('name');
-  var password = req.param('email');
+  var password = req.param('password');
 
   var port = req.app.settings.port || cfg.port;
   var failedUrl = req.protocol + '://' + req.host + ( port == 80 || port == 443 ? '' : ':' + port) + '/auth#toregister';
@@ -136,8 +136,8 @@ function doRegister(req, res) {
           if (err) {
             return res.status(401).end(err.message);
           }
-
-          return res.redirect(relayState);
+          return res.render('oaas/registerDone');
+          //return res.redirect(relayState);
         });
       });
     });
@@ -214,7 +214,8 @@ function doSubscribe(req, res) {
           return res.status(401).end(err.message);
         }
 
-        return res.redirect(relayState);
+        return res.render('oaas/registerDone');
+        //return res.redirect(relayState);
       });
     });
   });
@@ -324,10 +325,13 @@ function doActivate(req, res) {
 
   internalActivate(res, id, function (err) {
     if (err) {
-      return callback(new Error('Unauthorized'));
+      return res.status(404).end(err.message);
     }
 
-    return res.redirect(relayState);
+    return res.render('oaas/auth', {
+      RelayState: relayState
+    });
+    //return res.redirect(relayState);
   });
 }
 

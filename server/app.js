@@ -41,7 +41,7 @@ if (services["mongodb-2.2"]) {
 // The IP address of the Cloud Foundry DEA (Droplet Execution Agent) that hosts this application:
 var host = (process.env.VCAP_APP_HOST || 'localhost');
 // The port on the DEA for communication with the application:
-var port = (process.env.VCAP_APP_PORT || 3001);
+var port = (process.env.VCAP_APP_PORT || 3002);
 
 //============== END OF BLUEMIX ENV
 

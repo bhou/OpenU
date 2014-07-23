@@ -16,15 +16,15 @@ html.no-js(lang="en")
   head
     meta(charset="UTF-8")
     // <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    title Login and Registration Form with HTML5 and CSS3
+    title Desision Optimization Cloud
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     meta(name="description", content="Login and Registration Form with HTML5 and CSS3")
     meta(name="keywords", content="html5, css3, form, switch, animation, :target, pseudo-class")
     meta(name="author", content="Codrops")
     link(rel="shortcut icon", href="../favicon.ico")
-    link(rel="stylesheet", type="text/css", href="oaas/css/demo.css")
-    link(rel="stylesheet", type="text/css", href="oaas/css/style.css")
-    link(rel="stylesheet", type="text/css", href="oaas/css/animate-custom.css")
+    link(rel="stylesheet", type="text/css", href="/oaas/css/demo.css")
+    link(rel="stylesheet", type="text/css", href="/oaas/css/style.css")
+    link(rel="stylesheet", type="text/css", href="/oaas/css/animate-custom.css")
   body
     .container
       // Codrops top bar
@@ -39,12 +39,12 @@ html.no-js(lang="en")
       // / Codrops top bar
       header
         h1
-          | Desision Optimazation Cloud
+          | Desision Optimization Cloud
           span &nbsp;Begin your free trial
         nav.codrops-demos
           span
             a(href="#tologin")
-              strong "Login"
+              strong "Sign in"
             | &nbsp; means to login to IBM id and DOcloud if you have aready subscribed
         nav.codrops-demos
           span
@@ -65,7 +65,7 @@ html.no-js(lang="en")
           #wrapper
             #login.animate.form
               form(action="/doLogin", autocomplete="on", method="post")
-                h1 Log in
+                h1 Sign in
                 p
                   label.uname(for="username", data-icon="u")  Your email
                   input#username(type="text", name="email", required="required", placeholder="mymail@mail.com")
@@ -76,7 +76,7 @@ html.no-js(lang="en")
                   input#loginkeeping(type="checkbox", name="loginkeeping", value="loginkeeping")
                   label(for="loginkeeping") Keep me logged in
                 p.login.button
-                  input(type="submit", value="Login")
+                  input(type="submit", value="Submit")
                 if RelayState
                   p.login.button
                     input(type="hidden" name="RelayState" value="#{RelayState}")

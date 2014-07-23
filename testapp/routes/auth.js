@@ -5,8 +5,8 @@ var request = require('request');
 var nodemailer = require("nodemailer");
 var config = require('../config');
 
-var appId = '53cd3dbd3f7d8acc299abb9b';
-var token = '53cd3dbd3f7d8acc299abb9c';
+var appId = config.appId;
+var token = config.token;
 
 function internalLogin(res, email, password, relayState, callback) {
   res.render('oaas/loginForm', {

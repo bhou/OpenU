@@ -102,6 +102,7 @@ app.post('/api/app', api.newApplication); // create a new application
 app.post('/api/login', api.ensureAppAuthenticated, api.login);   // get the login token
 app.post('/api/verify', api.ensureAppAuthenticated, api.verifyToken);  // verify if the user token is valide
 app.get('/api/user/:id', api.ensureAppAuthenticated, api.getUserInfo);    // get user information
+app.post('/api/userinfo/:id', api.ensureAppAuthenticated, api.getUserInfo)
 app.post('/api/user', api.ensureAppAuthenticated, api.createUser);    // create user information
 app.put('/api/user/:id', api.ensureAppAuthenticated, api.setUserAttr);   // update user information
 app.put('/api/user', api.ensureAppAuthenticated, api.setUserAttr);   // update user information

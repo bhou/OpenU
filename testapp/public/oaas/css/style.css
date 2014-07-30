@@ -292,6 +292,7 @@ p.change_link{
 /** Styling both forms **/
 #register,
 #subscription,
+#unsubscribe,
 #login{
 	position: absolute;
 	top: 0px;
@@ -316,6 +317,7 @@ p.change_link{
 }
 #toregister:target ~ #wrapper #register,
 #tosubscription:target ~ #wrapper #subscription,
+#tounsubscribe:target ~ #wrapper #unsubscribe,
 #tologin:target ~ #wrapper #login{
 	z-index: 22;
 	-webkit-animation-name: fadeInLeft;
@@ -330,10 +332,16 @@ p.change_link{
 	animation-delay: .1s;
 }
 #toregister:target ~ #wrapper #login,
-#toregister:target ~ #wrapper #tosubscription,
+#toregister:target ~ #wrapper #subscription,
+#toregister:target ~ #wrapper #unsubscribe,
 #tosubscription:target ~ #wrapper #register,
 #tosubscription:target ~ #wrapper #login,
-#tologin:target ~ #wrapper #tosubscription,
+#tosubscription:target ~ #wrapper #unsubscribe,
+#tounsubscribe:target ~ #wrapper #register,
+#tounsubscribe:target ~ #wrapper #login,
+#tounsubscribe:target ~ #wrapper #subscription,
+#tologin:target ~ #wrapper #subscription,
+#tologin:target ~ #wrapper #unsubscribe,
 #tologin:target ~ #wrapper #register{
 	-webkit-animation-name: fadeOutLeft;
 	-moz-animation-name: fadeOutLeft;

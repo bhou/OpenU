@@ -43,6 +43,7 @@ app.get('/auth', function (req, res) {
 app.post('/doLogin', auth.doLogin);
 app.post('/doRegister', auth.doRegister);
 app.post('/doSubscribe', auth.doSubscribe);
+app.post('/doUnsubscribe', auth.doInactivate);
 
 app.get('/activate/:id', auth.doActivate);
 

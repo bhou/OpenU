@@ -152,7 +152,7 @@ function doRegister(req, res) {
   })
 }
 
-function internalSubscribe(res, appId, token, email, callback) {
+function internalChangeUserAttrByEmail(res, appId, token, email, attrName, attrValue, callback) {
   var options = {
     url: config.idpUrl + '/api/user',
     method: 'put',
@@ -163,8 +163,8 @@ function internalSubscribe(res, appId, token, email, callback) {
     },
     body: JSON.stringify({
       email: email,
-      name: 'oaas_trial',
-      value: 'subscribed'
+      name: attrName,
+      value: attrValue
     })
   };
 
@@ -184,6 +184,10 @@ function internalSubscribe(res, appId, token, email, callback) {
       return callback(new Error('Unauthorized'));
     }
   });
+}
+
+function internalSubscribe(res, appId, token, email, callback) {
+  internalChangeUserAttrByEmail(res, appId, token, email, 'oaas_trial', 'subscribed', callback);
 }
 
 function doSubscribe(req, res) {
@@ -218,6 +222,27 @@ function doSubscribe(req, res) {
         //return res.redirect(relayState);
       });
     });
+  });
+}
+
+function doInactivate(req, res) {
+  var email = req.param('email');
+
+  var relayState = req.param('RelayState');
+  if (relayState == null) {
+    relayState = config.relayState;
+  }
+
+  var port = req.app.settings.port || cfg.port;
+  var failedUrl = req.protocol + '://' + req.host + ( port == 80 || port == 443 ? '' : ':' + port) + '/auth#toregister?RelayState=' + relayState;
+  var successUrl = req.protocol + '://' + req.host + ( port == 80 || port == 443 ? '' : ':' + port) + '/auth#tologin?RelayState=' + relayState;
+
+  internalChangeUserAttrByEmail(res,appId, token, email, 'oaas_trial', 'inactivated', function(err, user) {
+    if (err) {
+      return res.status(401).end(err.message);
+    }
+
+    return res.render('oaas/unsubscribed');
   });
 }
 
@@ -282,7 +307,7 @@ function sendWelcomeMail(dest, id, callback) {
   smtpTransport.sendMail(mailOptions, callback);
 }
 
-function internalActivate(res, id, callback) {
+function internalChangeUserAttrById(res, id, attrName, attrValue, callback) {
   var options = {
     url: config.idpUrl + '/api/user/' + id,
     method: 'put',
@@ -292,8 +317,8 @@ function internalActivate(res, id, callback) {
       'token': token
     },
     body: JSON.stringify({
-      name: 'oaas_trial',
-      value: 'activated'
+      name: attrName,
+      value: attrValue
     })
   };
 
@@ -313,6 +338,10 @@ function internalActivate(res, id, callback) {
       return callback(new Error('Unauthorized'));
     }
   });
+}
+
+function internalActivate(res, id, callback) {
+  internalChangeUserAttrById(res, id, 'oaas_trial', 'activated', callback);
 }
 
 function doActivate(req, res) {
@@ -339,5 +368,6 @@ module.exports = {
   doLogin: doLogin,
   doRegister: doRegister,
   doSubscribe: doSubscribe,
-  doActivate: doActivate
+  doActivate: doActivate,
+  doInactivate: doInactivate
 }

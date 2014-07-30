@@ -56,12 +56,18 @@ html.no-js(lang="en")
             a(href="#toregister")
               strong "Register"
             | &nbsp; means you create an IBM id and subscribe a free trial on DOcloud
+        nav.codrops-demos
+          span
+            a(href="#tounsubscribe")
+              strong "Unsubscribe"
+            | &nbsp; means you already have an IBM id and DOcloud account, but you want to unsubscribe DOcloud
       section
         #container_demo
           // hidden anchor to stop jump http://www.css3create.com/Astuce-Empecher-le-scroll-avec-l-utilisation-de-target#wrap4
           a#toregister.hiddenanchor
           a#tologin.hiddenanchor
           a#tosubscription.hiddenanchor
+          a#tounsubscribe.hiddenanchor
           #wrapper
             #login.animate.form
               form(action="/doLogin", autocomplete="on", method="post")
@@ -114,6 +120,20 @@ html.no-js(lang="en")
                   input#username(type="text", name="email", required="required", placeholder="mymail@mail.com")
                 p.login.button
                   input(type="submit", value="Subscribe")
+                if RelayState
+                  p.login.button
+                    input(type="hidden" name="RelayState" value="#{RelayState}")
+                p.change_link
+                  | Do not have an IBM ID yet ?
+                  a.to_register(href="#toregister") Join us
+            #unsubscribe.animate.form
+              form(action="/doUnsubscribe", autocomplete="on", method="post")
+                h1 Unsubscribe
+                p
+                  label.uname(for="username", data-icon="u")  Your email
+                  input#username(type="text", name="email", required="required", placeholder="mymail@mail.com")
+                p.login.button
+                  input(type="submit", value="Unsubscribe")
                 if RelayState
                   p.login.button
                     input(type="hidden" name="RelayState" value="#{RelayState}")
